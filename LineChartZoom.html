@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test</title>
+</head>
+<style>
+.chart {
+    position: relative;
+    margin: auto;
+    width: 90%;
+}
+</style>
+
+<body>
+
+  <div class="chart">
+    <canvas id="cobaPlot"></canvas>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js" integrity="sha512-UXumZrZNiOwnTcZSHLOfcTs0aos2MzBWHXOHOuB0J/R44QB0dwY5JgfbvljXcklVf65Gc4El6RjZ+lnwd2az2g==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/0.7.7/chartjs-plugin-zoom.js" integrity="sha512-qeclqxc+2KW7GtbmHcj/Ev5eBoYpPnuAcPqusYRIfvaC9OWHlDwu1BrIVPYvfNDG+SRIRiPIokiSvhlLJXDqsw==" crossorigin="anonymous"></script>
+  <script>
+    const chart = document.querySelector("#cobaPlot");
+
+    const config = {
+        type: 'line',
+        data: data,
+        options: {
+            responsive: true,
+            interaction: {
+            mode: 'index',
+            intersect: false,
+        },
+        stacked: false,
+        plugins: {
+            title: {
+            display: true,
+            text: 'Chart.js Line Chart - Multi Axis'
+            }
+        },
+    scales: {
+      y: {
+        type: 'linear',
+        display: true,
+        position: 'left',
+      },
+      y1: {
+        type: 'linear',
+        display: true,
+        position: 'right',
+
+        // grid line settings
+        grid: {
+          drawOnChartArea: false, // only want the grid lines for one axis to show up
+        },
+      },
+    }
+  },
+};
+
+    let myChart = new Chart(chart, {
+      type: 'line',
+      data: {
+        labels: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'],
+        datasets: [{
+          label: 'ECG',
+          data: ['100', '150', '500', '200', '300', '500', '200', '320', '450', '100'],
+          fill: false,
+          borderColor: [
+            'rgba(255, 99, 132, 1)'
+          ],
+          borderWidth: 1,
+          pointStyle: 'line'
+        }]
+      },
+      options: {
+        legend: {
+          position: "top",
+          align: "end"
+        },
+        title: {
+          text: "ECG",
+          display: true,
+          fontSize: 35
+        },
+        zoom: {
+          enabled: true,
+          wheel: true,
+          speed: 0.1,
+          threshold: 1
+        }
+      }
+    });
+    </script>
+
+</body>
+
+</html>

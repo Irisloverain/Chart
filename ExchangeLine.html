@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>日幣匯率歷史圖表</title>
+  </head>
+  <body>
+    <button id="resetButton">重設</button>
+    <canvas id="myChart"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"
+      integrity="sha512-UXumZrZNiOwnTcZSHLOfcTs0aos2MzBWHXOHOuB0J/R44QB0dwY5JgfbvljXcklVf65Gc4El6RjZ+lnwd2az2g=="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/0.7.7/chartjs-plugin-zoom.js"
+      integrity="sha512-qeclqxc+2KW7GtbmHcj/Ev5eBoYpPnuAcPqusYRIfvaC9OWHlDwu1BrIVPYvfNDG+SRIRiPIokiSvhlLJXDqsw=="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js"></script>
+    <script>
+      let exchangeRates = {};
+      //取得匯率API
+      axios({
+        url: "ExchangeRates.json",
+        method: "get",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      })
+        .then((res) => {
+          exchangeRates = res.data;
+          console.log(exchangeRates);
+
+          const USD_History = exchangeRates.filter(e=> e.幣別 === "USD")
+          console.log("USD_History", USD_History);
+
+          const dateValues = USD_History.map(e => e.日期);
+          console.log("dateValues", dateValues);
+
+          // 獲取賣出匯率的陣列，作為第一條線的數據
+          const sellRates = USD_History.map((u) =>u.即期賣出匯率);
+
+          // 獲取買進匯率的陣列，作為第二條線的數據
+          const buyRates = USD_History.map((u) =>u.即期買入匯率);
+
+          // 使用Chart.js繪製圖表
+          const ctx = document.getElementById("myChart").getContext("2d");
+          let myChart; // 將 myChart 宣告在全域範疇，以便稍後重設圖表
+
+          function createChart() {
+            myChart = new Chart(ctx, {
+              type: "line",
+              data: {
+                labels: dateValues,
+                datasets: [
+                  {
+                    label: "賣出匯率",
+                    data: sellRates,
+                    borderColor: "rgba(255, 99, 132, 1)",
+                    backgroundColor: "rgba(255, 99, 132, 0.2)",
+                    fill: false,
+                  },
+                  {
+                    label: "買進匯率",
+                    data: buyRates,
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    backgroundColor: "rgba(54, 162, 235, 0.2)",
+                    fill: false,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                scales: {
+                  x: {
+                    type: "time",
+                    time: {
+                      unit: "day",
+                      displayFormats: {
+                        day: "YYYY-MM-DD",
+                      },
+                    },
+                    ticks: {
+                      autoSkip: true,
+                      maxTicksLimit: 20,
+                    },
+                  },
+                  y: {
+                    beginAtZero: false,
+                  },
+                },
+                plugins: {
+                  zoom: {
+                    zoom: {
+                      enabled: true,
+                      wheel: true,
+                      mode: "x",
+                      speed: 1,
+                      sensitivity: 0.9,
+                    },
+                    limits: {
+                      x: { min: "original", max: "original" },
+                      y: { min: "original", max: "original" },
+                    },
+                  },
+                },
+              },
+            });
+          }
+
+          createChart(); // 初始化圖表
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+
+      // 重設按鈕的點擊事件處理函式
+      const resetButton = document.getElementById("resetButton");
+      resetButton.addEventListener("click", () => {
+        myChart.resetZoom();
+      });
+    </script>
+  </body>
+</html>

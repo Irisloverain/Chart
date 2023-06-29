@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.1.1/dist/chartjs-plugin-zoom.min.js"></script>
+<body>
+<canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+
+<script>
+const xDate = ["06/01","06/01","06/01","06/01","06/01","06/01","06/01","06/01","06/01","06/01","06/01"];
+const yValues = [7,8,8,9,9,9,10,11,14,14,15];
+
+new Chart("myChart", {
+  type: "line",
+  data: {
+    labels: xDate,
+    datasets: [{
+      fill: false,/*填滿線下方*/
+      lineTension: 0,/*線曲折度*/
+      backgroundColor: "rgba(0,0,255,1.0)",/*背景顏色*/
+      borderColor: "rgba(0,0,255,0.1)",/*線顏色*/
+      data: yValues/*線顏色*/
+    }]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      yAxes: [{ticks: {min: 6, max:16}}], /*y軸數值級距*/
+    }
+  }
+});
+</script>
+
+</body>
+</html>
